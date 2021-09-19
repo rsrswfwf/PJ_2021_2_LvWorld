@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "871669645672",
+    "project_id": "unity-lvworld",
+    "storage_bucket": "unity-lvworld.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871669645672:android:379a689f77df1fbb4a16dd",
+        "android_client_info": {
+          "package_name": "com.seo.loveworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "871669645672-ncmm762d7vlbv4i5svisop0ve9piqvaq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seo.loveworld",
+            "certificate_hash": "a36e6db83e9149109415e2166a87d825010e6732"
+          }
+        },
+        {
+          "client_id": "871669645672-udfalf6vfvs2jnoahiqh49hd1cpe2oi9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFsN1V7ictc-Ns3UD-9GGhP6sTgWNSpSU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "871669645672-udfalf6vfvs2jnoahiqh49hd1cpe2oi9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

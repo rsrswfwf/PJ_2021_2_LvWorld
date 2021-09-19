@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_android_client_id,@string/default_web_client_id">
+  <string name="gcm_defaultSenderId" translatable="false">871669645672</string>
+  <string name="google_storage_bucket" translatable="false">unity-lvworld.appspot.com</string>
+  <string name="project_id" translatable="false">unity-lvworld</string>
+  <string name="google_api_key" translatable="false">AIzaSyAFsN1V7ictc-Ns3UD-9GGhP6sTgWNSpSU</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAFsN1V7ictc-Ns3UD-9GGhP6sTgWNSpSU</string>
+  <string name="google_app_id" translatable="false">1:871669645672:android:379a689f77df1fbb4a16dd</string>
+  <string name="default_android_client_id" translatable="false">871669645672-ncmm762d7vlbv4i5svisop0ve9piqvaq.apps.googleusercontent.com</string>
+  <string name="default_web_client_id" translatable="false">871669645672-udfalf6vfvs2jnoahiqh49hd1cpe2oi9.apps.googleusercontent.com</string>
+</resources>
