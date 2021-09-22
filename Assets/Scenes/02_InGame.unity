@@ -212,7 +212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &87816205
 RectTransform:
   m_ObjectHideFlags: 0
@@ -234,7 +234,7 @@ RectTransform:
   - {fileID: 1163398866}
   - {fileID: 54211728}
   m_Father: {fileID: 572595632}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -527,7 +527,7 @@ GameObject:
   - component: {fileID: 138842027}
   - component: {fileID: 138842026}
   m_Layer: 5
-  m_Name: JB_Slot3
+  m_Name: Eq_Slot3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1337,11 +1337,11 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 873319135}
   - {fileID: 619371382}
   - {fileID: 87816205}
+  - {fileID: 873319135}
   m_Father: {fileID: 1357769576}
-  m_RootOrder: 13
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -1471,7 +1471,7 @@ GameObject:
   - component: {fileID: 616079891}
   - component: {fileID: 616079890}
   m_Layer: 5
-  m_Name: JB_Slot1
+  m_Name: Eq_Slot1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1573,7 +1573,7 @@ RectTransform:
   - {fileID: 995124588}
   - {fileID: 1345625347}
   m_Father: {fileID: 572595632}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1628,6 +1628,8 @@ GameObject:
   - component: {fileID: 714092348}
   - component: {fileID: 714092347}
   - component: {fileID: 714092346}
+  - component: {fileID: 714092349}
+  - component: {fileID: 714092350}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1683,6 +1685,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &714092349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714092345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2890ec2919718249bd84fe09e3e00fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  introskipBtn: {fileID: 1351274581}
+  skipon: {fileID: 21300000, guid: b5a3992ae1b741f44beace59632c37a9, type: 3}
+  skipoff: {fileID: 21300000, guid: 72f10a4f1a2bbef48b887e23c9a981ed, type: 3}
+--- !u!114 &714092350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714092345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fed52305a8c804848b010cf0ca4214eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &872446504
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,7 +1817,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 572595632}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1875,12 +1904,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
+      - m_Target: {fileID: 714092350}
+        m_MethodName: StateChange
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2138,7 +2167,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1357769576}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2873,7 +2902,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uCD1D\uD569 60"
+  m_Text: "\uAE30\uBCF8 60"
 --- !u!222 &1127023745
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3539,7 +3568,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1351274584}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 714092349}
+        m_MethodName: IntroSkip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1351274584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3617,9 +3657,9 @@ RectTransform:
   - {fileID: 324949224}
   - {fileID: 879820978}
   - {fileID: 101161134}
+  - {fileID: 572595632}
   - {fileID: 1670963734}
   - {fileID: 959606033}
-  - {fileID: 572595632}
   m_Father: {fileID: 1510419191}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3778,8 +3818,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -200, y: -80}
-  m_SizeDelta: {x: 150, y: 50}
+  m_AnchoredPosition: {x: -47.36, y: -80}
+  m_SizeDelta: {x: 240, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1469971321
 MonoBehaviour:
@@ -3807,7 +3847,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 80
-    m_Alignment: 5
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -4258,7 +4298,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1357769576}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4344,7 +4384,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1670963735}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 714092350}
+        m_MethodName: ShowEquip
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1698288168
 GameObject:
   m_ObjectHideFlags: 0
@@ -5275,7 +5326,7 @@ GameObject:
   - component: {fileID: 2089071511}
   - component: {fileID: 2089071510}
   m_Layer: 5
-  m_Name: JB_Slot2
+  m_Name: Eq_Slot2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
