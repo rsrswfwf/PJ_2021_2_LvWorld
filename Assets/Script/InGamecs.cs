@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class InGamecs : MonoBehaviour
 {
+
     // 필요 변수 및 오브젝트
     int statechange = 0;
     int equiponoff = 0;
@@ -21,12 +22,13 @@ public class InGamecs : MonoBehaviour
     // 게임 내 필요 오브젝트 (2)
     GameObject img_equip1, img_equip2, img_equip3, img_artifact1, img_artifact2, img_artifact3;
 
-    // 게임 내 정보
-    int NowWorld, NowStage, NowSpeed, NowDEF, NowATK, NowHP, NowmaxHP;
-    string NowBuff;
-    string[] NowEquip = new string[3];
-    string[] NowWeapon = new string[10];
-    string[] NowArtifact = new string[3];
+    // 게임 내 플레이어 및 현재 상태 정보
+    public int NowStage, NowSpeed, NowDEF, NowATK, NowHP, NowmaxHP;
+    public float NowWorld;
+    public string NowBuff;
+    public string[] NowEquip = new string[3];
+    public string[] NowWeapon = new string[10];
+    public string[] NowArtifact = new string[3];
 
 
     // Start is called before the first frame update
@@ -61,7 +63,7 @@ public class InGamecs : MonoBehaviour
         // 게임 시작 시 게임 설정 불러오기
 
         // 초기 스테이지 정보
-        NowWorld = PlayerPrefs.GetInt("World");
+        NowWorld = PlayerPrefs.GetFloat("World");
         NowStage = PlayerPrefs.GetInt("Stage");
 
         // 초기 스탯
@@ -93,7 +95,7 @@ public class InGamecs : MonoBehaviour
     }
 
     // 실시간 상태 시각화
-    private void StateUpdate()
+    public void StateUpdate()
     {
         txt_stage.GetComponent<Text>().text = $"Stage {NowStage}";
         txt_world.GetComponent<Text>().text = $"W{NowWorld}";

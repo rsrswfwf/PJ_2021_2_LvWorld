@@ -1,2 +1,11 @@
 lastUpgrade=01012
 proj.pluginVersion=0.10.12
+App.NearbdServiceId=com.seo.loveworld
+android.NearbySetupDone=true
+proj.AppId=871669645672
+and.BundleId=com.seo.loveworld
+proj.classDir=Assets
+proj.ConstantsClassName=GPGSIds
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--Google+Play+game+services+IDs.+Save+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--app_id--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e871669645672%3c%2fstring%3e%0d%0a++%3c%21--package_name--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.seo.loveworld%3c%2fstring%3e%0d%0a++%3c%21--achievement+AchivementLogin--%3e%0d%0a++%3cstring+name%3d%22achievement_achivementlogin%22+translatable%3d%22false%22%3eCgkI6IK9nK8ZEAIQAQ%3c%2fstring%3e%0d%0a++%3c%21--event+EventJoin--%3e%0d%0a++%3cstring+name%3d%22event_eventjoin%22+translatable%3d%22false%22%3eCgkI6IK9nK8ZEAIQAg%3c%2fstring%3e%0d%0a++%3c%21--leaderboard+Luv_LeaderBoards--%3e%0d%0a++%3cstring+name%3d%22leaderboard_luv_leaderboards%22+translatable%3d%22false%22%3eCgkI6IK9nK8ZEAIQAw%3c%2fstring%3e%0d%0a%3c%2fresources%3e
+and.ClientId=871669645672-ncmm762d7vlbv4i5svisop0ve9piqvaq.apps.googleusercontent.com
+android.SetupDone=true

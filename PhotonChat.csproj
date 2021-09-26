@@ -288,6 +288,9 @@
     <Reference Include="Firebase.Editor">
       <HintPath>D:/LoveWorld/Assets/Firebase/Editor/Firebase.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Firebase.Analytics">
+      <HintPath>D:/LoveWorld/Assets/Firebase/Plugins/Firebase.Analytics.dll</HintPath>
+    </Reference>
     <Reference Include="Firebase.App">
       <HintPath>D:/LoveWorld/Assets/Firebase/Plugins/Firebase.App.dll</HintPath>
     </Reference>
@@ -304,19 +307,16 @@
       <HintPath>D:/LoveWorld/Assets/Firebase/Plugins/Google.MiniJson.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Compat">
-      <HintPath>D:/LoveWorld/Assets/Parse/Plugins/Unity.Compat.dll</HintPath>
+      <HintPath>D:/LoveWorld/Assets/Parse/Plugins/dotNet45/Unity.Compat.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Tasks">
-      <HintPath>D:/LoveWorld/Assets/Parse/Plugins/Unity.Tasks.dll</HintPath>
+      <HintPath>D:/LoveWorld/Assets/Parse/Plugins/dotNet45/Unity.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>D:/LoveWorld/Assets/Photon/PhotonLibs/netstandard2.0/Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="websocket-sharp">
       <HintPath>D:/LoveWorld/Assets/Photon/PhotonLibs/WebSocket/websocket-sharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Firebase.Analytics">
-      <HintPath>D:/LoveWorld/Assets/Firebase/Plugins/Firebase.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/UNITY/2019.4.13f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
