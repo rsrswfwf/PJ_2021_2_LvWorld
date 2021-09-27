@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 public class StagePlay : MonoBehaviour
@@ -13,6 +13,18 @@ public class StagePlay : MonoBehaviour
     int[] boss_card_ran_per = new int[] { 76, 82, 88, 100 };   // 보스는 마을이 뜨지 않아 4를 제외하고, 5를 고정으로 가운데 카드에 넣습니다.
     // 2. 보물상자 확률 ( 함정, 몬스터, 체력 전부 회복, 체력 일정 회복, 장비 획득 )
     int[] box_ran_per = new int[] { 15, 25, 30, 45, 100 };
+    // 3. 장비 드랍 확률 ( 월드 별 )
+    int[] eq_world1_per = new int[] { 100 };
+    int[] eq_world2_per = new int[] { 75, 100 };
+    int[] eq_world3_per = new int[] { 58, 98, 100 };
+    int[] eq_world4_per = new int[] { 35, 85, 100 };
+    int[] eq_world5_per = new int[] { 15, 58, 98, 100 };
+    int[] eq_world6_per = new int[] { 10, 40, 94, 99, 100 };
+    int[] eq_world7_per = new int[] { 3, 28, 88, 98, 100 };
+    int[] eq_world8_per = new int[] { 1, 21, 85, 97, 100 };
+    int[] eq_worldx_per = new int[] { 1, 16, 80, 95, 100 };
+    int[] eq_modifier_per = new int[] { 5, 25, 78, 98, 100 };
+
 
     // Player State    ex) Now ..
     InGamecs ingamecs;
@@ -47,6 +59,8 @@ public class StagePlay : MonoBehaviour
         else if (ingamecs.NowWorld <= 6 && ingamecs.NowStage >= 25) BossCardSetting();
         else if (ingamecs.NowWorld <= 8 && ingamecs.NowStage >= 20) BossCardSetting();
         else CardSetting();
+
+        // 카드 세팅 이후 이미지 변경 필요
     }
 
     // 보스 등장 이전 세팅
@@ -115,6 +129,8 @@ public class StagePlay : MonoBehaviour
         // 2.1 몬스터&보스
     void VSMonster(int select_card_num)
     {
+        Monster_Panel.SetActive(true);
+
         if (select_card_num == 5)
         {
             bossClear = true;
@@ -190,6 +206,8 @@ public class StagePlay : MonoBehaviour
         // 2.3 버프
     void AddBuff()
     {
+        Buff_Panel.SetActive(true);
+        // 버프를 랜덤으로 json을 통해 가져오고, 스테이지를 넘김
         Debug.Log("AddBuff");
         NextStage();
     }
@@ -197,6 +215,7 @@ public class StagePlay : MonoBehaviour
         // 2.4 이벤트
     void RandomEvent()
     {
+        Event_Panel.SetActive(true);
         Debug.Log("RandomEvent");
         NextStage();
     }
@@ -204,6 +223,7 @@ public class StagePlay : MonoBehaviour
         // 2.5 마을
     void CityIn()
     {
+        Town_Panel.SetActive(true);
         Debug.Log("CityIn");
         NextStage();
     }
