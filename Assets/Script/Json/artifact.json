@@ -1,5 +1,4 @@
-{
-  "items": [
+[
     {
       "id": "artifact00",
       "name": "세계수의 나뭇가지",
@@ -263,5 +262,4 @@
         "monsterChanceIncrease": 0.1
       }
     }
-  ]
-}
+]

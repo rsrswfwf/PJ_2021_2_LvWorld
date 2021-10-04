@@ -136,6 +136,7 @@
     <Compile Include="Assets\Photon\PhotonLibs\WebSocket\WebSocket.cs" />
     <Compile Include="Assets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\Script\InGamecs.cs" />
+    <Compile Include="Assets\Script\InJson.cs" />
     <Compile Include="Assets\Script\Lobbycs.cs" />
     <Compile Include="Assets\Script\Setting.cs" />
     <Compile Include="Assets\Script\StagePlay.cs" />
@@ -344,6 +345,9 @@
     </Reference>
     <Reference Include="Google.MiniJson">
       <HintPath>D:/LoveWorld/Assets/Firebase/Plugins/Google.MiniJson.dll</HintPath>
+    </Reference>
+    <Reference Include="LitJson">
+      <HintPath>D:/LoveWorld/Assets/GooglePlayGames/Plugins/LitJson.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Compat">
       <HintPath>D:/LoveWorld/Assets/Parse/Plugins/dotNet45/Unity.Compat.dll</HintPath>

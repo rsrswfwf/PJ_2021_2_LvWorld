@@ -44,7 +44,7 @@ public class Lobbycs : MonoBehaviour
         PlayerPrefs.SetInt("HP", 40);
 
         // 초기 버프 및 장비 상태
-        PlayerPrefs.SetString("Buff", "0,00");               // 앞 1자리 [None :0, Buff :1, DeBuff:2], 뒤 2자리 [해당 버프, 디버프 번호]
+        PlayerPrefs.SetString("Buff", "");               // 버프 id 없을 땐 ""
         PlayerPrefs.SetString("Equipment", "0000,0000,0000");    // 순서대로 4자리씩 종류(helmet, armor, shoes)와 equip type, 해당 값이 0000인 경우 None
 
         // 초기 무기 상태

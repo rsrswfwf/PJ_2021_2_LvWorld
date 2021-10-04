@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class InGamecs : MonoBehaviour
 {
+    InJson injson;
 
     // 필요 변수 및 오브젝트
     int statechange = 0;
@@ -18,7 +19,7 @@ public class InGamecs : MonoBehaviour
     string[] weapontype = new string[6] { "검", "망치", "창", "단검", "지팡이", "X" };
 
     // 게임 내 필요 오브젝트 (1)
-    GameObject txt_speed, txt_def, txt_atk, txt_buff, txt_snerge;
+    GameObject txt_speed, txt_def, txt_atk, txt_buff, txt_snerge, txt_hp;
     // 게임 내 필요 오브젝트 (2)
     GameObject img_equip1, img_equip2, img_equip3, img_artifact1, img_artifact2, img_artifact3;
 
@@ -34,6 +35,8 @@ public class InGamecs : MonoBehaviour
     // Start is called before the first frame update
     void Start()   
     {
+        injson = GameObject.Find("EventSystem").GetComponent<InJson>();
+
         // 필요 오브젝트 연결
         p_panel1 = GameObject.Find("P_Panel1");
         p_panel2 = GameObject.Find("P_Panel2");
@@ -50,6 +53,7 @@ public class InGamecs : MonoBehaviour
         txt_atk = GameObject.Find("Txt_Atk");
         txt_buff = GameObject.Find("Txt_Buff");
         txt_snerge = GameObject.Find("Txt_Sn2");
+        txt_hp = GameObject.Find("HP_state");
 
         // 오브젝트 연결 (2)
         img_equip1 = GameObject.Find("Eq_Slot1");
@@ -74,16 +78,7 @@ public class InGamecs : MonoBehaviour
         NowHP = PlayerPrefs.GetInt("HP");
 
         // 초기 버프 및 장비 상태
-        if (PlayerPrefs.GetString("Buff").Substring(0, 1) == "1")
-        {
-            NowBuff = "buff" + PlayerPrefs.GetString("Buff").Substring(1, 2);
-        }
-        else if (PlayerPrefs.GetString("Buff").Substring(0, 1) == "2")
-        {
-            NowBuff = "debuff" + PlayerPrefs.GetString("Buff").Substring(1, 2);
-        }
-        else NowBuff = "NONE";
-
+        NowBuff = PlayerPrefs.GetString("Buff");
         NowEquip = PlayerPrefs.GetString("Equipment").Split(',');
         NowWeapon = PlayerPrefs.GetString("Weapon").Split(',');
         NowArtifact = PlayerPrefs.GetString("Artifact").Split(',');
@@ -97,15 +92,22 @@ public class InGamecs : MonoBehaviour
     // 실시간 상태 시각화
     public void StateUpdate()
     {
+        // 스테이지 시각화
         txt_stage.GetComponent<Text>().text = $"Stage {NowStage}";
         txt_world.GetComponent<Text>().text = $"W{NowWorld}";
 
-        // 시각화 (1)
+        // 스탯 시각화
         txt_speed.GetComponent<Text>().text = $"{NowSpeed}";
         txt_def.GetComponent<Text>().text = $"{NowDEF}";
         txt_atk.GetComponent<Text>().text = $"기본 {NowATK}";
-        txt_buff.GetComponent<Text>().text = $"{NowBuff}";      // json 활용해서 id에 맞는 효과 출력해주어야 합니다.
+        txt_hp.GetComponent<Text>().text = $"{NowHP} / {NowmaxHP}";
 
+        // 버프 시각화
+        if (NowBuff == "") txt_buff.GetComponent<Text>().text = "버프 없음";
+        else if (NowBuff.Substring(0, 1) == "b") txt_buff.GetComponent<Text>().text = $"{injson.jbuffData[int.Parse(NowBuff.Substring(4, 2))]["description"].ToString()}";      // json 활용해서 id에 맞는 효과 출력해주어야 합니다.
+        else txt_buff.GetComponent<Text>().text = $"{injson.jbuffData[int.Parse(NowBuff.Substring(6, 2)) + 12]["description"].ToString()}";
+
+        // 무기 시너지 시각화
         int[] WeaponSnCheck = new int[6] { 0, 0, 0, 0, 0, 0 };
         int maxnum = 0;
         string sntxt = "";

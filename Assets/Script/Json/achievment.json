@@ -1,5 +1,4 @@
-{
-  "items": [
+[
     {
       "id": "CollectFirstLegendary",
       "name": "심봤다!",
@@ -140,5 +139,4 @@
       "name": "흑막",
       "description": "하트&하츠 첫 클리어"
     }
-  ]
-}
+]

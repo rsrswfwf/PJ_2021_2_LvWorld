@@ -1,5 +1,5 @@
-﻿{
-  "items": [
+﻿
+[
     {
       "id": "buff01",
       "name": "스탯 [최대 체력]",
@@ -167,5 +167,4 @@
       "rewardCoinPercent": -0.2,
       "isDebuff": true
     }
-  ]
-}
+]

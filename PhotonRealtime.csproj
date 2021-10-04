@@ -312,6 +312,9 @@
     <Reference Include="Google.MiniJson">
       <HintPath>D:/LoveWorld/Assets/Firebase/Plugins/Google.MiniJson.dll</HintPath>
     </Reference>
+    <Reference Include="LitJson">
+      <HintPath>D:/LoveWorld/Assets/GooglePlayGames/Plugins/LitJson.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Compat">
       <HintPath>D:/LoveWorld/Assets/Parse/Plugins/dotNet45/Unity.Compat.dll</HintPath>
     </Reference>

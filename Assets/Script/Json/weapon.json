@@ -1,5 +1,4 @@
-{
-  "items": [
+[
     {
       "id": "bare_fist",
       "type": "weapon",
@@ -1410,5 +1409,4 @@
       "minAttack": 91,
       "maxAttack": 100
     }
-  ]
-}
+]
