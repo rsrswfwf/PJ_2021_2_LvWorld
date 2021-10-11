@@ -49,6 +49,7 @@ public class Lobbycs : MonoBehaviour
 
         // 초기 무기 상태
         PlayerPrefs.SetString("Weapon", "555,555,555,555,555,555,555,555,555,555");    // 순서대로 3자리씩 Weapon type, 값이 555인 경우 bare_fist
+        PlayerPrefs.SetString("WeaponATK", "0,0,0,0,0,0,0,0,0,0");    // 무기 공격력
 
         // 초기 아티팩트 상태
         PlayerPrefs.SetString("Artifact", "99,99,99");  // 순서대로 2자리씩 Artifact type, 값이 99인 경우 None

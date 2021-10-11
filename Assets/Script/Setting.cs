@@ -53,9 +53,39 @@ public class Setting : MonoBehaviour
     }
 
     // 데이터 초기화 버튼
-    public void DataReset()
+    public void DataReset() 
     {
-        // player 세팅 이후
+        // 일단 인게임 세팅 초기화
+        // 이어하기 데이터 초기화용 스탯 설정
+        PlayerPrefs.SetFloat("World", 1);
+        PlayerPrefs.SetInt("Stage", 1);
+
+        // 초기 스탯 설정
+
+        // 초기 스탯
+        PlayerPrefs.SetInt("Speed", 10);
+        PlayerPrefs.SetInt("DEF", 0);
+        PlayerPrefs.SetInt("ATK", 10);
+        PlayerPrefs.SetInt("maxHP", 40);
+        PlayerPrefs.SetInt("HP", 40);
+
+        // 초기 버프 및 장비 상태
+        PlayerPrefs.SetString("Buff", "");               // 버프 id 없을 땐 ""
+        PlayerPrefs.SetString("Equipment", "0000,0000,0000");    // 순서대로 4자리씩 종류(helmet, armor, shoes)와 equip type, 해당 값이 0000인 경우 None
+
+        // 초기 무기 상태
+        PlayerPrefs.SetString("Weapon", "555,555,555,555,555,555,555,555,555,555");    // 순서대로 3자리씩 Weapon type, 값이 555인 경우 bare_fist
+        PlayerPrefs.SetString("WeaponATK", "0,0,0,0,0,0,0,0,0,0");    // 무기 공격력
+
+        // 초기 아티팩트 상태
+        PlayerPrefs.SetString("Artifact", "99,99,99");  // 순서대로 2자리씩 Artifact type, 값이 99인 경우 None
+
+
+
+        // 업적, 능력 해금, 그 외 추가 기능 등을 아예 초기화
+        // 해당 기능은, 추후에 추가해야 함
+
+
     }
 
     // 저장 후 로비 화면으로 돌아가기
@@ -81,6 +111,8 @@ public class Setting : MonoBehaviour
         // 초기 무기 상태
         PlayerPrefs.SetString("Weapon", $"{ingamecs.NowWeapon[0]},{ingamecs.NowWeapon[1]},{ingamecs.NowWeapon[2]},{ingamecs.NowWeapon[3]},{ingamecs.NowWeapon[4]}," +
             $"{ingamecs.NowWeapon[5]},{ingamecs.NowWeapon[6]},{ingamecs.NowWeapon[7]},{ingamecs.NowWeapon[8]},{ingamecs.NowWeapon[9]}");    // 순서대로 3자리씩 Weapon type, 값이 555인 경우 bare_fist
+        PlayerPrefs.SetString("WeaponATK", $"{ingamecs.NowWeaponATK[0]},{ingamecs.NowWeaponATK[1]},{ingamecs.NowWeaponATK[2]},{ingamecs.NowWeaponATK[3]},{ingamecs.NowWeaponATK[4]}," +
+            $"{ingamecs.NowWeaponATK[5]},{ingamecs.NowWeaponATK[6]},{ingamecs.NowWeaponATK[7]},{ingamecs.NowWeaponATK[8]},{ingamecs.NowWeaponATK[9]},");    // 무기 공격력
 
         // 초기 아티팩트 상태
         PlayerPrefs.SetString("Artifact", $"{ingamecs.NowArtifact[0]},{ingamecs.NowArtifact[1]},{ingamecs.NowArtifact[2]}");  // 순서대로 2자리씩 Artifact type, 값이 99인 경우 None

@@ -29,6 +29,7 @@ public class InGamecs : MonoBehaviour
     public string NowBuff;
     public string[] NowEquip = new string[3];
     public string[] NowWeapon = new string[10];
+    public string[] NowWeaponATK = new string[10];
     public string[] NowArtifact = new string[3];
 
 
@@ -81,6 +82,7 @@ public class InGamecs : MonoBehaviour
         NowBuff = PlayerPrefs.GetString("Buff");
         NowEquip = PlayerPrefs.GetString("Equipment").Split(',');
         NowWeapon = PlayerPrefs.GetString("Weapon").Split(',');
+        NowWeaponATK = PlayerPrefs.GetString("WeaponATK").Split(',');
         NowArtifact = PlayerPrefs.GetString("Artifact").Split(',');
         
 
