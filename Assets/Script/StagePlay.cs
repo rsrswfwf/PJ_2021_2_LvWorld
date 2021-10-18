@@ -22,6 +22,8 @@ public class StagePlay : MonoBehaviour
     int[] dr_worldx_per = new int[] { 1, 16, 80, 95, 100 };
     int[] dr_modifier_per = new int[] { 5, 25, 78, 98, 100 };
     int[] eq_or_weapon_per = new int[] { 70, 80, 90, 100 };
+    // 4. 강화 비용
+    int[] weapon_money = new int[] { 0, 25, 100, 250, 500, 750, 1000 };
 
 
     string[] checkrank = new string[6] { "NONE", "커먼", "언커먼", "레어", "유니크", "레전더리", };
@@ -52,12 +54,22 @@ public class StagePlay : MonoBehaviour
     public GameObject[] txtW = new GameObject[10];
     public GameObject BeforeE, AfterE, BeforeW, AfterW;
     public GameObject BeforeTxtE, AfterTxtE, BeforeTxtW, AfterTxtW;
-    public Sprite helmet, armor, shoes;
+    public Sprite helmet, armor, shoes, uimask;
     public Sprite hammer, dagger, fist, spear, sword, wand;
     int takeweaponnum = 0;      // 교체 무기 인덱스
     int getweaponATK = 0;       // 얻은 무기 공격력
     string getEorW;
 
+
+    // 2. 강화 오브젝트
+    public GameObject[] nowRW = new GameObject[10];
+    public GameObject[] nowtxtRW = new GameObject[10];
+    public GameObject[] nowRE = new GameObject[3];
+    public GameObject[] nowtxtRE = new GameObject[3];
+
+    public GameObject R1, R2;
+    public GameObject Bf_R, Af_R, Txt_TakeGold;
+    string ReenChoiceEorW;
 
     // 3. 스테이지 넘김용 변수
     bool bossClear = false;
@@ -441,7 +453,6 @@ public class StagePlay : MonoBehaviour
         ingamecs.NowWeaponATK[takeweaponnum] = $"{getweaponATK}";
     }
 
-
     // 몬스터 전투 입력
     public void MonsterBettle()
     {
@@ -540,6 +551,7 @@ public class StagePlay : MonoBehaviour
         }
     }
 
+    // 박스 이벤트
     public void BoxEvent()
     {
         if (BEnum == 1) BoxMonster();
@@ -586,6 +598,7 @@ public class StagePlay : MonoBehaviour
         NextStage();
     }
 
+    // 버프 추가
     public void AddBuff()
     {
         // 버프 12개만 사용
@@ -608,6 +621,7 @@ public class StagePlay : MonoBehaviour
     {
         ShopEquipSetting((int)ingamecs.NowWorld);
         Town_Panel.SetActive(true);
+        TownEnchant1A();
         Debug.Log("CityIn");
         NextStage();
     }
@@ -736,8 +750,167 @@ public class StagePlay : MonoBehaviour
         }
     }
 
-    // 무기 강화 버튼
+    // 무기 강화 1_A(정보 업데이트)
+    void TownEnchant1A()
+    {
+        ingamecs.StateUpdate();
+        ingamecs.NowWeaponUpdate();
 
+        for (int i = 0; i < 10; i++)
+        {
+            int weaponindex = 1;
+            if (ingamecs.NowWeapon[i].Substring(0, 1) == "5") weaponindex = 0;
+            else
+            {
+                weaponindex += (int.Parse(ingamecs.NowWeapon[i].Substring(0, 1))) +
+                    25 * (int.Parse(ingamecs.NowWeapon[i].Substring(1, 1))) +
+                    5 * (int.Parse(ingamecs.NowWeapon[i].Substring(2, 1)));
+            }
+
+            for (int j = 0; j < 6; j++)
+            {
+                switch (ingamecs.NowWeapon[i].Substring(0, 1))
+                {
+                    case "0":
+                        nowRW[i].GetComponent<Image>().sprite = sword;
+                        nowtxtRW[i].GetComponent<Text>().text = $"{ingamecs.NowWeaponATK[i]}";
+                        break;
+                    case "1":
+                        nowRW[i].GetComponent<Image>().sprite = hammer;
+                        nowtxtRW[i].GetComponent<Text>().text = $"{ingamecs.NowWeaponATK[i]}";
+                        break;
+                    case "2":
+                        nowRW[i].GetComponent<Image>().sprite = spear;
+                        nowtxtRW[i].GetComponent<Text>().text = $"{ingamecs.NowWeaponATK[i]}";
+                        break;
+                    case "3":
+                        nowRW[i].GetComponent<Image>().sprite = dagger;
+                        nowtxtRW[i].GetComponent<Text>().text = $"{ingamecs.NowWeaponATK[i]}";
+                        break;
+                    case "4":
+                        nowRW[i].GetComponent<Image>().sprite = wand;
+                        nowtxtRW[i].GetComponent<Text>().text = $"{ingamecs.NowWeaponATK[i]}";
+                        break;
+                    case "5":
+                        nowRW[i].GetComponent<Image>().sprite = fist;
+                        nowtxtRW[i].GetComponent<Text>().text = $"{ingamecs.NowWeaponATK[i]}";
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (i < 3)
+            {
+                int Equipindex = 3;
+                if (ingamecs.NowEquip[i].Substring(0, 1) == "0") Equipindex = i;
+                else
+                {
+                    Equipindex += 125 * (int.Parse(ingamecs.NowEquip[i].Substring(0, 1)) - 1) +
+                        25 * int.Parse(ingamecs.NowEquip[i].Substring(1, 1)) +
+                        5 * int.Parse(ingamecs.NowEquip[i].Substring(2, 1)) +
+                        int.Parse(ingamecs.NowEquip[i].Substring(3, 1));
+                }
+
+                nowRE[i].GetComponent<Image>().sprite = ingamecs.nowE[i].GetComponent<Image>().sprite;
+                nowtxtRE[i].GetComponent<Text>().text = $"[{checkrank[int.Parse(injson.jequipData[Equipindex]["rank"].ToString()) + 1]}]";
+            }
+        }
+    }
+
+    // 무기 강화 1_B(무기 or 장비 선택)
+    public void TownEnchant1B()
+    {
+        ReenChoiceEorW = EventSystem.current.currentSelectedGameObject.name;
+
+        Debug.Log(ReenChoiceEorW);
+
+        if (ReenChoiceEorW.Substring(4, 1) == "W")        // 무기 선택 시
+        {
+            if (ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(0, 1) == "5") Debug.Log("강화 불가한 아이템");
+            else if (ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(2, 1) == "4") Debug.Log("최고 등급의 아이템");
+            else
+            {
+                R1.SetActive(false);
+                R2.SetActive(true);
+                TownEnchant2A();
+            }
+        }
+        else                                        // 장비 선택 시
+        {
+            if (ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(0, 1) == "0") Debug.Log("강화 불가한 아이템");
+            else if (ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(3, 1) == "4") Debug.Log("최고 등급의 아이템");
+            else
+            {
+                R1.SetActive(false);
+                R2.SetActive(true);
+                TownEnchant2A();
+            }
+        }
+    }
+
+    // 무기 강화 2_A(시각화)
+    void TownEnchant2A()
+    {
+        // UI 띄워주기
+
+        if (ReenChoiceEorW.Substring(4, 1) == "W")          // 무기 선택 시
+        {
+            Bf_R.GetComponent<Image>().sprite = ingamecs.nowW[int.Parse(ReenChoiceEorW.Substring(5, 1))].GetComponent<Image>().sprite;
+            Af_R.GetComponent<Image>().sprite = ingamecs.nowW[int.Parse(ReenChoiceEorW.Substring(5, 1))].GetComponent<Image>().sprite;
+
+            int weaponindex = 1;
+            weaponindex += (int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(0, 1))) +
+                25 * (int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(1, 1))) +
+                5 * (int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(2, 1)));
+
+            Txt_TakeGold.GetComponent<Text>().text = $"필요 골드 : {weapon_money[int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5,1))].Substring(2,1))]}";
+        }
+        else                                                // 장비 선택 시
+        {
+            Bf_R.GetComponent<Image>().sprite = ingamecs.nowE[int.Parse(ReenChoiceEorW.Substring(5, 1))].GetComponent<Image>().sprite;
+            Af_R.GetComponent<Image>().sprite = ingamecs.nowE[int.Parse(ReenChoiceEorW.Substring(5, 1))].GetComponent<Image>().sprite;
+
+            int equipindex = 3;
+            equipindex += 125 * (int.Parse(ReenChoiceEorW.Substring(5, 1))) +
+                25 * int.Parse(ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(1, 1)) +
+                5 * int.Parse(ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(2, 1)) +
+                int.Parse(ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(3, 1));
+
+            Txt_TakeGold.GetComponent<Text>().text = $"필요 골드 : {weapon_money[int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(3, 1))]}";
+        }
+    }
+
+    // 무기 강화 2_B(강화 적용)
+    public void TownEnchant2B()
+    {
+        if (ingamecs.NowGold < int.Parse(Txt_TakeGold.GetComponent<Text>().text.Substring(8))) Debug.Log("골드 부족");
+        else
+        {
+            ingamecs.NowGold -= int.Parse(Txt_TakeGold.GetComponent<Text>().text.Substring(8));
+
+            if (ReenChoiceEorW.Substring(4, 1) == "W")          // 무기 선택 시
+            {
+                ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))] = $"{ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(0, 2)}" +
+                    $"{int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(2, 1)) + 1}";
+
+
+                int weaponindex = 1;
+                weaponindex += (int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(0, 1))) +
+                    25 * (int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(1, 1))) +
+                    5 * (int.Parse(ingamecs.NowWeapon[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(2, 1)));
+
+                ingamecs.NowWeaponATK[int.Parse(ReenChoiceEorW.Substring(5, 1))] = $"{Random.Range(int.Parse(injson.jweaponData[weaponindex]["minAttack"].ToString()), int.Parse(injson.jweaponData[weaponindex]["maxAttack"].ToString()))}";
+            }
+            else                                                // 장비 선택 시
+            {
+                ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))] = $"{ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(0, 3)}" +
+                    $"{int.Parse(ingamecs.NowEquip[int.Parse(ReenChoiceEorW.Substring(5, 1))].Substring(3, 1)) + 1}";
+            }
+        }
+
+        ingamecs.StateUpdate();
+    }
 
     // 3. 스테이지 넘김
 

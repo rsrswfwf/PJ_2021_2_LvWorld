@@ -68,6 +68,7 @@ public class Setting : MonoBehaviour
         PlayerPrefs.SetInt("ATK", 10);
         PlayerPrefs.SetInt("maxHP", 40);
         PlayerPrefs.SetInt("HP", 40);
+        PlayerPrefs.SetInt("Gold", 0);
 
         // 초기 버프 및 장비 상태
         PlayerPrefs.SetString("Buff", "");               // 버프 id 없을 땐 ""
@@ -103,6 +104,7 @@ public class Setting : MonoBehaviour
         PlayerPrefs.SetInt("ATK", ingamecs.NowATK);
         PlayerPrefs.SetInt("maxHP", ingamecs.NowmaxHP);
         PlayerPrefs.SetInt("HP", ingamecs.NowHP);
+        PlayerPrefs.SetInt("Gold", ingamecs.NowGold);
 
         // 초기 버프 및 장비 상태
         PlayerPrefs.SetString("Buff", ingamecs.NowBuff);               // 앞 1자리 버프 id 부여, 값 없으면 Null

@@ -42,6 +42,7 @@ public class Lobbycs : MonoBehaviour
         PlayerPrefs.SetInt("ATK", 10);
         PlayerPrefs.SetInt("maxHP", 40);
         PlayerPrefs.SetInt("HP", 40);
+        PlayerPrefs.SetInt("Gold", 10000);
 
         // 초기 버프 및 장비 상태
         PlayerPrefs.SetString("Buff", "");               // 버프 id 없을 땐 ""

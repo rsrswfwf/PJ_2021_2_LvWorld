@@ -142,7 +142,7 @@
     <Compile Include="Assets\Script\StagePlay.cs" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
     <None Include="Assets\Photon\PhotonUnityNetworking\changelog.txt" />
-    <None Include="Assets\Image\Loveworld_UI\Fonts\한글_제목용\License.txt" />
+    <None Include="Assets\Resources\Image\Loveworld_UI\Fonts\한글_제목용\License.txt" />
     <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-app-unity\maven-metadata.xml" />
     <None Include="Assets\Photon\PhotonLibs\changes-library.txt" />
     <None Include="Assets\Firebase\m2repository\com\google\firebase\firebase-analytics-unity\maven-metadata.xml" />
