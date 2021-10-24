@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StagePlay : MonoBehaviour
@@ -24,6 +27,11 @@ public class StagePlay : MonoBehaviour
     int[] eq_or_weapon_per = new int[] { 70, 80, 90, 100 };
     // 4. 강화 비용
     int[] weapon_money = new int[] { 0, 25, 100, 250, 500, 750, 1000 };
+    // 5. 몬스터 월드 구분 및 주는 골드
+    int[] monster_worldnum = new int[] { -2, 6, 14, 22, 30, 38, 46, 54, 62, 69, 86, 93 };
+    int[] monster_Gold = new int[] { 0, 15, 25, 25, 35, 35, 45, 50, 60, 75, 90, 90, 100, 100, 110, 120, 130, 120, 150};
+    int[] boss_Gold = new int[] { 0, 200, 450, 700, 1000, 1500, 0, 2000, 2500, 0, 0 };
+
 
 
     string[] checkrank = new string[6] { "NONE", "커먼", "언커먼", "레어", "유니크", "레전더리", };
@@ -37,7 +45,7 @@ public class StagePlay : MonoBehaviour
     int[] stage_card_num = new int[3];
 
     // 2. 카드 별 패널 띄움 변수
-    public GameObject Monster_Panel, Box_Panel, Buff_Panel, Event_Panel, Town_Panel;   // 각 패널
+    public GameObject Monster_Panel, Box_Panel, Buff_Panel, Event_Panel, Town_Panel, MVic_Panel;   // 각 패널
     public GameObject Monster_name, MPanel_Title;
     public GameObject Txt_bpanel, Btn_bpanel, Img_bpanel;
 
@@ -46,6 +54,25 @@ public class StagePlay : MonoBehaviour
 
     // 2. 보물상자 변수
     int BEnum = 0;
+
+    // 2. 몬스터 배틀 카드 핸드
+    Stack Deck = new Stack();
+    public GameObject BCardPanel, MAtkPanel;
+    public GameObject[] BattleCardHand = new GameObject[4];
+    public GameObject[] BattleCardHandTxt = new GameObject[4];
+    int[] CardHand = new int[4];
+    int[] CardExistCheck = new int[5] { 0, 0, 0, 0, 0 };
+    int hand_count = 0;
+
+    // 2. 카드 사용 여부 체크
+    int[] CardUseCheck = { 0, 0, 0, 0 };
+    int CardUseCount = 0;
+
+    // 2. 몬스터 배틀
+    float pturn = 0;
+    float mturn = 0;
+    bool morp = false;                              // false 몬스터, true 플레이어
+    public GameObject MBtnTxt, MAtkRecord, MhpTxt, MVGoldTxt;
 
 
     // 2. 장비 및 무기 보상용 패널 변수
@@ -105,7 +132,7 @@ public class StagePlay : MonoBehaviour
 
         for (int i = 0; i < 3; i++)
         {
-            percent = Random.Range(1, 100);
+            percent = Random.Range(1, 101);
             for (int j = 0; j < 5; j++)
             {
                 if (percent <= card_ran_per[j])
@@ -130,7 +157,7 @@ public class StagePlay : MonoBehaviour
                 continue;
             }
 
-            percent = Random.Range(1, 100);
+            percent = Random.Range(1, 101);
             for (int j = 0; j < 4; j++)
             {
                 if (percent <= boss_card_ran_per[j])
@@ -203,7 +230,7 @@ public class StagePlay : MonoBehaviour
 
         // 등급 부여
         // 무기, 장비 구분      0이면 무기, 1은 helmet, 2는 armor, 3은 shoes
-        per = Random.Range(1, 100);
+        per = Random.Range(1, 101);
         for (int j = 0; j < 4; j++)
         {
             if (per <= eq_or_weapon_per[j])
@@ -214,11 +241,11 @@ public class StagePlay : MonoBehaviour
         }
 
         // 종류 구분            숫자 3개 중 1번째
-        per = Random.Range(0, 4);
+        per = Random.Range(0, 5);
         eorw += $"{per}";
 
         // 등급 구분            숫자 3개 중 2번째
-        per = Random.Range(1, 100);
+        per = Random.Range(1, 101);
         for (int j = 0; j < 5; j++)
         {
             if (per <= eq_world_per[j])
@@ -229,7 +256,7 @@ public class StagePlay : MonoBehaviour
         }
 
         // 수식어 구분          숫자 3개 중 3번째
-        per = Random.Range(1, 100);
+        per = Random.Range(1, 101);
         for (int j = 0; j < 5; j++)
         {
             if (per <= dr_modifier_per[j])
@@ -456,7 +483,124 @@ public class StagePlay : MonoBehaviour
     // 몬스터 전투 입력
     public void MonsterBettle()
     {
+        // 스피드로 턴 체크해 해당 턴인 주체에게 턴 잡아주기
 
+        Debug.Log($"{ingamecs.NowMSpeed} : m, {ingamecs.NowSpeed} : p");
+
+        while (pturn < 1000 && mturn < 1000)
+        {
+            pturn += (float)ingamecs.NowSpeed / 100;
+            mturn += (float)ingamecs.NowMSpeed / 100;
+        }
+
+        if (pturn > 1000 && mturn > 1000)
+        {
+            if (pturn > mturn) { PlayerTurn(); pturn -= 1000; }
+            else { MonsterAttack(); mturn -= 1000; }
+        }
+        else if (pturn > 1000)
+        {
+            PlayerTurn();
+            pturn -= 1000;
+        }
+        else
+        {
+            MonsterAttack();
+            mturn -= 1000;
+        }
+
+    }
+
+    // 몬스터 턴
+    public void MonsterAttack()
+    {
+        morp = false;
+
+        MAtkPanel.SetActive(true);
+        MBtnTxt.GetComponent<Text>().text = "턴 진행";
+
+        int mdamage = ingamecs.NowMATK * (40/(40+ingamecs.NowDEF));
+        ingamecs.NowHP -= mdamage;
+        if (ingamecs.NowHP < 0) ingamecs.NowHP = 0;
+
+        ingamecs.StateUpdate();
+
+        MAtkRecord.GetComponent<Text>().text = $"몬스터 {ingamecs.NowMName}의 \"공격!\"\n\n데미지 {mdamage}의 타격을 입어,\n현재 체력이 {ingamecs.NowHP} 남았습니다.";
+    }
+
+    // 플레이어 턴
+    public void PlayerTurn()
+    {
+        morp = true;
+
+        BCardPanel.SetActive(true);
+        MBtnTxt.GetComponent<Text>().text = "공격!";
+        
+        for (int i = 0; i < 4; i++)
+        {
+            BattleCardHandTxt[i].GetComponent<Text>().text = $"공격력 {ingamecs.NowWeaponATK[CardHand[i]]}";
+        }
+
+    }
+
+    // 사용할 무기 선택
+    public void UseWeaponOnOff()
+    {
+
+        string Cardname = EventSystem.current.currentSelectedGameObject.name;
+
+        if (CardUseCheck[int.Parse(Cardname.Substring(8))] == 1)
+        {
+            CardUseCheck[int.Parse(Cardname.Substring(8))] = 0;
+            CardUseCount--;
+        }
+        else
+        {
+            if (CardUseCount == 3)
+            {
+                Debug.Log("안됩니다");
+                return;
+            }
+            CardUseCheck[int.Parse(Cardname.Substring(8))] = 1;
+            CardUseCount++;
+        }
+
+        Debug.Log($"<< {CardUseCheck[0]} {CardUseCheck[1]} {CardUseCheck[2]} {CardUseCheck[3]} >>");
+    }
+
+    // 배틀 넘기는 버튼
+    public void MonsterBattleBtn()
+    {
+        if (morp)
+        {
+            if (CardUseCount == 0) return;
+            else
+            {
+                int damage = 0;
+                for (int i = 0; i < 4; i++)
+                {
+                    damage += int.Parse(ingamecs.NowWeaponATK[CardHand[i]]) * CardUseCheck[i];
+                    CardExistCheck[i] = 1 - CardUseCheck[i];
+                    CardUseCheck[i] = 0;
+                }
+
+                hand_count = 0;
+                ingamecs.NowMHP -= (int)((ingamecs.NowATK + damage) * (40 / (40 + (float)ingamecs.NowMDEF)));
+                Debug.Log($"{(int)((ingamecs.NowATK + damage) * (40 / (40 + (float)ingamecs.NowMDEF)))}");
+                TakeHand();
+
+                CardUseCount = 0;
+            }
+        }
+
+        MhpTxt.GetComponent<Text>().text = $"남은 체력 : {ingamecs.NowMHP}";
+
+        MAtkPanel.SetActive(false);
+        BCardPanel.SetActive(false);
+
+        if (ingamecs.NowHP <= 0) GameOver();
+        else if (ingamecs.NowMHP <= 0) Victory();
+        else MonsterBettle();
     }
 
 
@@ -464,22 +608,150 @@ public class StagePlay : MonoBehaviour
     void VSMonster(int select_card_num)
     {
         Monster_Panel.SetActive(true);
+        TakeHand();
+        Debug.Log($"{CardHand[0]} {CardHand[1]} {CardHand[2]} {CardHand[3]} <Card Hand>");
+        // Debug.Log($"{Deck.ToArray()[0]} {Deck.ToArray()[1]} {Deck.ToArray()[2]} {Deck.ToArray()[3]} <hDeck> {Deck.Count}");
 
         if (select_card_num == 5)
         {
+            TakeBoss(ingamecs.NowWorld);
             MPanel_Title.GetComponent<Text>().text = "보스 전투";
-            Monster_name.GetComponent<Text>().text = "보스 OOO이 등장했습니다!";
-            bossClear = true;
+            Monster_name.GetComponent<Text>().text = $"보스 \"{ingamecs.NowMName}\" 출현!";
+            MhpTxt.GetComponent<Text>().text = $"남은 체력 : {ingamecs.NowMHP}";
+            // bossClear = true;
             Debug.Log("Boss");
         }
         else
         {
+            TakeMonster(ingamecs.NowWorld);
             MPanel_Title.GetComponent<Text>().text = "몬스터 전투";
-            Monster_name.GetComponent<Text>().text = "몬스터 OOO이 등장했습니다!";
+            Monster_name.GetComponent<Text>().text = $"몬스터 \"{ingamecs.NowMName}\" 출현!";
+            MhpTxt.GetComponent<Text>().text = $"남은 체력 : {ingamecs.NowMHP}";
             Debug.Log("Monster");
         }
 
         NextStage();
+    }
+
+    // 몬스터 불러오기
+    void TakeMonster(float world)
+    {
+        int world_check;
+
+        if (world < 5) world_check = (int)world;
+        else if (world < 6) world_check = (int)world + (int)((world % 1) * 10);
+        else if (world < 7) world_check = (int)world + 1;
+        else if (world < 8) world_check = (int)world + (int)((world % 1) * 10) + 1;
+        else world_check = (int)world + 2;
+
+        int monsterNum = Random.Range(monster_worldnum[world_check-1]+2, monster_worldnum[world_check]+1);
+
+        ingamecs.NowMName = injson.jmonsterData[monsterNum]["name"].ToString();
+        ingamecs.NowMSpeed = int.Parse(injson.jmonsterData[monsterNum]["baseStat"]["speed"].ToString());
+        ingamecs.NowMDEF = int.Parse(injson.jmonsterData[monsterNum]["baseStat"]["defense"].ToString());
+        ingamecs.NowMATK = int.Parse(injson.jmonsterData[monsterNum]["baseStat"]["attack"].ToString());
+        ingamecs.NowMmaxHP = int.Parse(injson.jmonsterData[monsterNum]["baseStat"]["maxHp"].ToString());
+        ingamecs.NowMHP = int.Parse(injson.jmonsterData[monsterNum]["baseStat"]["maxHp"].ToString());
+        ingamecs.NowMGetGold = Random.Range(monster_Gold[(int)world * 2 - 1], monster_Gold[(int)world * 2] + 1);
+    }
+
+    // 보스 불러오기
+    void TakeBoss(float world)
+    {
+        int world_check;
+
+        if (world < 5) world_check = (int)world;
+        else if (world < 6) world_check = (int)world + (int)((world % 1) * 10);
+        else if (world < 7) world_check = (int)world + 1;
+        else if (world < 8) world_check = (int)world + (int)((world % 1) * 10) + 1;
+        else world_check = (int)world + 2;
+
+        int bossNum = monster_worldnum[world_check] + 1;
+
+        ingamecs.NowMName = injson.jmonsterData[bossNum]["name"].ToString();
+        ingamecs.NowMSpeed = int.Parse(injson.jmonsterData[bossNum]["baseStat"]["speed"].ToString());
+        ingamecs.NowMDEF = int.Parse(injson.jmonsterData[bossNum]["baseStat"]["defense"].ToString());
+        ingamecs.NowMATK = int.Parse(injson.jmonsterData[bossNum]["baseStat"]["attack"].ToString());
+        ingamecs.NowMmaxHP = int.Parse(injson.jmonsterData[bossNum]["baseStat"]["maxHp"].ToString());
+        ingamecs.NowMHP = int.Parse(injson.jmonsterData[bossNum]["baseStat"]["maxHp"].ToString());
+        ingamecs.NowMGetGold = boss_Gold[(int)world];
+    }
+
+    // 카드 가져오기
+    void TakeHand()
+    {
+        while (hand_count != 4)       // 4장 채워질 때까지
+        {
+            if (CardExistCheck[hand_count] == 1)    // 이미 카드가 채워져있다면
+            {
+                hand_count += 1;
+                continue;
+            }
+
+            if (Deck.Count == 0) ShuppleDeck();             // 가져올 카드가 없는 경우 셔플
+            CardHand[hand_count] = (int)Deck.Pop();         // 덱 pop으로 가져오기
+            CardExistCheck[hand_count] = 1;                   // 핸드 카드 idx 사용 가능 표시
+            hand_count += 1;
+        }
+    }
+
+    // 덱 셔플
+    void ShuppleDeck()
+    {
+        int[] ranNum = new int[10];
+
+        // 순서 세팅 (숫자 작은 순부터 나오게 하려고 합니다)
+        for (int i = 0; i < 10; i++)
+        {
+            ranNum[i] = Random.Range(0, 101);
+        }
+
+        // 세팅 후 덱에 순서 입력
+        for (int i = 0; i < 10; i++)
+        {
+            int idxCard = ranNum.ToList().IndexOf(ranNum.Max());
+            ranNum[idxCard] = -1;
+            Deck.Push(idxCard);
+        }
+
+        Debug.Log($"{Deck.ToArray()[0]} {Deck.ToArray()[1]} {Deck.ToArray()[2]} {Deck.ToArray()[3]} <Deck>");
+    }
+
+    // 몬스터 퇴치
+    public void Victory()
+    {
+        Monster_Panel.SetActive(false);
+        MVic_Panel.SetActive(true);
+
+        Deck = new Stack();
+        CardHand = new int[4];
+        CardExistCheck = new int[5] { 0, 0, 0, 0, 0 };
+        hand_count = 0;
+
+        ingamecs.NowGold += ingamecs.NowMGetGold;
+        ingamecs.StateUpdate();
+        MVGoldTxt.GetComponent<Text>().text = $"Gold {ingamecs.NowMGetGold}\n무기/장비 1종";
+
+        morp = false;
+    }
+
+    // 승리 버튼
+    public void VictoryBtn()
+    {
+        MVic_Panel.SetActive(false);
+
+        EorWRandGet((int)ingamecs.NowWorld);
+
+        if (getEorW.Substring(0, 1) == "0")
+        {
+            WeaponGet_Panel.SetActive(true);
+            WeaponSetting();
+        }
+        else
+        {
+            EquipmentGet_Panel.SetActive(true);
+            EquipSetting();
+        }
     }
 
     // 2.2 보물상자
@@ -493,11 +765,11 @@ public class StagePlay : MonoBehaviour
     // 박스 관련 적용 ( 몬스터, 및 장비 획득 창으로 이동해야 함 )
     public void BoxApply()
     {
-        int box_percent = Random.Range(1, 100);
+        int box_percent = Random.Range(1, 101);
         // 보물상자 확률 ( 함정, 몬스터, 체력 전부 회복, 체력 일정 회복, 장비 획득 )
 
-        int hurt_percent = Random.Range(5, 10);
-        int heal_percent = Random.Range(10, 20);
+        int hurt_percent = Random.Range(5, 11);
+        int heal_percent = Random.Range(10, 21);
 
         for (int j = 0; j < 5; j++)
         {
@@ -568,8 +840,11 @@ public class StagePlay : MonoBehaviour
     {
         Monster_Panel.SetActive(true);
 
+        TakeMonster(ingamecs.NowWorld);
         MPanel_Title.GetComponent<Text>().text = "몬스터 전투";
-        Monster_name.GetComponent<Text>().text = "몬스터 OOO이 등장했습니다!";
+        Monster_name.GetComponent<Text>().text = $"몬스터 \"{ingamecs.NowMName}\" 출현!";
+        MhpTxt.GetComponent<Text>().text = $"남은 체력 : {ingamecs.NowMHP}";
+
         Debug.Log("Monster");
     }
 
@@ -602,7 +877,7 @@ public class StagePlay : MonoBehaviour
     public void AddBuff()
     {
         // 버프 12개만 사용
-        int b = Random.Range(0, 11);
+        int b = Random.Range(0, 12);
         ingamecs.NowBuff = injson.jbuffData[b]["id"].ToString();
 
         ingamecs.StateUpdate();
@@ -672,7 +947,7 @@ public class StagePlay : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             // 무기, 장비 구분      0이면 무기, 1은 helmet, 2는 armor, 3은 shoes
-            per = Random.Range(1, 100);
+            per = Random.Range(1, 101);
             for (int j = 0; j < 4; j++)
             {
                 if (per <= eq_or_weapon_per[j])
@@ -683,11 +958,11 @@ public class StagePlay : MonoBehaviour
             }
 
             // 종류 구분            숫자 3개 중 1번째
-            per = Random.Range(0, 4);
+            per = Random.Range(0, 5);
             eorw += $"{per}";
 
             // 등급 구분            숫자 3개 중 2번째
-            per = Random.Range(1, 100);
+            per = Random.Range(1, 101);
             for (int j = 0; j < 5; j++)
             {
                 if (per <= eq_world_per[j])
@@ -698,7 +973,7 @@ public class StagePlay : MonoBehaviour
             }
 
             // 수식어 구분          숫자 3개 중 3번째
-            per = Random.Range(1, 100);
+            per = Random.Range(1, 101);
             for (int j = 0; j < 5; j++)
             {
                 if (per <= dr_modifier_per[j])
@@ -913,7 +1188,6 @@ public class StagePlay : MonoBehaviour
     }
 
     // 3. 스테이지 넘김
-
     void NextStage()
     {
         if (bossClear)
@@ -930,10 +1204,48 @@ public class StagePlay : MonoBehaviour
 
 
     // 4. 플레이어 사망
-
     void GameOver()
     {
         // 게임 오버 및 결과창 띄워주고
-        // 해당 게임 기록창으로 옮겨주어야 함
+
+        // 로비 이동
+        SceneManager.LoadScene("01_Lobby");
+
+        // 이어하기 데이터 초기화용 스탯 설정
+        PlayerPrefs.SetFloat("World", ingamecs.NowWorld);
+        PlayerPrefs.SetInt("Stage", ingamecs.NowStage);
+
+        // 초기 스탯 설정
+
+        // 초기 스탯
+        PlayerPrefs.SetInt("Speed", ingamecs.NowSpeed);
+        PlayerPrefs.SetInt("DEF", ingamecs.NowDEF);
+        PlayerPrefs.SetInt("ATK", ingamecs.NowATK);
+        PlayerPrefs.SetInt("maxHP", ingamecs.NowmaxHP);
+        PlayerPrefs.SetInt("HP", ingamecs.NowHP);
+        PlayerPrefs.SetInt("Gold", ingamecs.NowGold);
+
+        // 초기 버프 및 장비 상태
+        PlayerPrefs.SetString("Buff", ingamecs.NowBuff);               // 앞 1자리 버프 id 부여, 값 없으면 Null
+        PlayerPrefs.SetString("Equipment", $"{ingamecs.NowEquip[0]},{ingamecs.NowEquip[1]},{ingamecs.NowEquip[2]}");    // 순서대로 4자리씩 종류(helmet, armor, shoes)와 equip type, 해당 값이 0000인 경우 None
+
+        // 초기 무기 상태
+        PlayerPrefs.SetString("Weapon", $"{ingamecs.NowWeapon[0]},{ingamecs.NowWeapon[1]},{ingamecs.NowWeapon[2]},{ingamecs.NowWeapon[3]},{ingamecs.NowWeapon[4]}," +
+            $"{ingamecs.NowWeapon[5]},{ingamecs.NowWeapon[6]},{ingamecs.NowWeapon[7]},{ingamecs.NowWeapon[8]},{ingamecs.NowWeapon[9]}");    // 순서대로 3자리씩 Weapon type, 값이 555인 경우 bare_fist
+        PlayerPrefs.SetString("WeaponATK", $"{ingamecs.NowWeaponATK[0]},{ingamecs.NowWeaponATK[1]},{ingamecs.NowWeaponATK[2]},{ingamecs.NowWeaponATK[3]},{ingamecs.NowWeaponATK[4]}," +
+            $"{ingamecs.NowWeaponATK[5]},{ingamecs.NowWeaponATK[6]},{ingamecs.NowWeaponATK[7]},{ingamecs.NowWeaponATK[8]},{ingamecs.NowWeaponATK[9]},");    // 무기 공격력
+
+        // 초기 아티팩트 상태
+        PlayerPrefs.SetString("Artifact", $"{ingamecs.NowArtifact[0]},{ingamecs.NowArtifact[1]},{ingamecs.NowArtifact[2]}");  // 순서대로 2자리씩 Artifact type, 값이 99인 경우 None
+
+        // 초기 몬스터 상태
+        PlayerPrefs.SetString("MName", $"{ingamecs.NowMName}");
+        PlayerPrefs.SetInt("MSpeed", ingamecs.NowMSpeed);
+        PlayerPrefs.SetInt("MDEF", ingamecs.NowMDEF);
+        PlayerPrefs.SetInt("MATK", ingamecs.NowMATK);
+        PlayerPrefs.SetInt("MmaxHP", ingamecs.NowMmaxHP);
+        PlayerPrefs.SetInt("MHP", ingamecs.NowMHP);
+        PlayerPrefs.SetInt("MGetGold", ingamecs.NowMGetGold);
+
     }
 }

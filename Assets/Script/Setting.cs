@@ -81,6 +81,14 @@ public class Setting : MonoBehaviour
         // 초기 아티팩트 상태
         PlayerPrefs.SetString("Artifact", "99,99,99");  // 순서대로 2자리씩 Artifact type, 값이 99인 경우 None
 
+        // 초기 몬스터 상태
+        PlayerPrefs.SetString("MName", "Monster Name");
+        PlayerPrefs.SetInt("MSpeed", 0);
+        PlayerPrefs.SetInt("MDEF", 0);
+        PlayerPrefs.SetInt("MATK", 0);
+        PlayerPrefs.SetInt("MmaxHP", 0);
+        PlayerPrefs.SetInt("MHP", 0);
+        PlayerPrefs.SetInt("MGetGold", 0);
 
 
         // 업적, 능력 해금, 그 외 추가 기능 등을 아예 초기화
@@ -119,6 +127,14 @@ public class Setting : MonoBehaviour
         // 초기 아티팩트 상태
         PlayerPrefs.SetString("Artifact", $"{ingamecs.NowArtifact[0]},{ingamecs.NowArtifact[1]},{ingamecs.NowArtifact[2]}");  // 순서대로 2자리씩 Artifact type, 값이 99인 경우 None
 
+        // 초기 몬스터 상태
+        PlayerPrefs.SetString("MName", $"{ingamecs.NowMName}");
+        PlayerPrefs.SetInt("MSpeed", ingamecs.NowMSpeed);
+        PlayerPrefs.SetInt("MDEF", ingamecs.NowMDEF);
+        PlayerPrefs.SetInt("MATK", ingamecs.NowMATK);
+        PlayerPrefs.SetInt("MmaxHP", ingamecs.NowMmaxHP);
+        PlayerPrefs.SetInt("MHP", ingamecs.NowMHP);
+        PlayerPrefs.SetInt("MGetGold", ingamecs.NowMGetGold);
 
         // Lobby로 돌아가기
         SceneManager.LoadScene("01_Lobby");

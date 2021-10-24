@@ -39,8 +39,11 @@ public class InGamecs : MonoBehaviour
     GameObject[] nowtxtW = new GameObject[10];
     public GameObject[] nowE = new GameObject[3];
     GameObject[] nowA = new GameObject[3];
-
     GameObject checkEorA, checktxtEorA, checkExplainEorA;
+
+    // 현재 몬스터 정보
+    public int NowMSpeed, NowMDEF, NowMATK, NowMHP, NowMmaxHP, NowMGetGold;
+    public string NowMName;
 
 
     // Start is called before the first frame update
@@ -105,7 +108,16 @@ public class InGamecs : MonoBehaviour
         NowWeapon = PlayerPrefs.GetString("Weapon").Split(',');
         NowWeaponATK = PlayerPrefs.GetString("WeaponATK").Split(',');
         NowArtifact = PlayerPrefs.GetString("Artifact").Split(',');
-        
+
+        // 초기 몬스터 상태
+        NowMName = PlayerPrefs.GetString("MName");
+        NowMSpeed = PlayerPrefs.GetInt("MSpeed");
+        NowMDEF = PlayerPrefs.GetInt("MDEF");
+        NowMATK = PlayerPrefs.GetInt("MATK");
+        NowMmaxHP = PlayerPrefs.GetInt("MmaxHP");
+        NowMHP = PlayerPrefs.GetInt("MHP");
+        NowMGetGold = PlayerPrefs.GetInt("MGetGold");
+
 
 
         // 시각화
