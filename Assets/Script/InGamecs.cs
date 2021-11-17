@@ -127,6 +127,8 @@ public class InGamecs : MonoBehaviour
     // 실시간 상태 시각화
     public void StateUpdate()
     {
+        if (NowHP > NowmaxHP) NowHP = NowmaxHP;
+
         // 스테이지 시각화
         txt_stage.GetComponent<Text>().text = $"Stage {NowStage}";
         txt_world.GetComponent<Text>().text = $"W{NowWorld}";

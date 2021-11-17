@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class StagePlay : MonoBehaviour
 {
+    // 필요 오브젝트
+    public Sprite[] Card_Img = new Sprite[6];               // 스테이지 카드 확률 참고
+
     // 사용 확률 모음
     // 1. 스테이지 카드 확률 ( 일반, 보스 )
     int[] card_ran_per = new int[] { 70, 75, 80, 90, 100 };    // 0 = 몬스터, 1 = 보물상자, 2 = 버프, 3 = 랜덤 이벤트, 4 = 마을 NPC, 5 = 보스
@@ -27,6 +30,7 @@ public class StagePlay : MonoBehaviour
     int[] eq_or_weapon_per = new int[] { 70, 80, 90, 100 };
     // 4. 강화 비용
     int[] weapon_money = new int[] { 0, 25, 100, 250, 500, 750, 1000 };
+    int[] heal_money = new int[] { };
     // 5. 몬스터 월드 구분 및 주는 골드
     int[] monster_worldnum = new int[] { -2, 6, 14, 22, 30, 38, 46, 54, 62, 69, 86, 93 };
     int[] monster_Gold = new int[] { 0, 15, 25, 25, 35, 35, 45, 50, 60, 75, 90, 90, 100, 100, 110, 120, 130, 120, 150};
@@ -51,6 +55,9 @@ public class StagePlay : MonoBehaviour
 
     // 2. 상인 장비 리스트용 변수
     string[] eorwArray = new string[3];
+    public GameObject[] ShopImg = new GameObject[3];
+    public GameObject HcostTxt;
+    double healPay;
 
     // 2. 보물상자 변수
     int BEnum = 0;
@@ -73,6 +80,7 @@ public class StagePlay : MonoBehaviour
     float mturn = 0;
     bool morp = false;                              // false 몬스터, true 플레이어
     public GameObject MBtnTxt, MAtkRecord, MhpTxt, MVGoldTxt;
+    public GameObject[] CardWImg = new GameObject[4];   // 배틀 시 카드 무기 체크
 
 
     // 2. 장비 및 무기 보상용 패널 변수
@@ -123,6 +131,9 @@ public class StagePlay : MonoBehaviour
         else CardSetting();
 
         // 카드 세팅 이후 이미지 변경 필요
+        Stage_card0.GetComponent<Image>().sprite = Card_Img[stage_card_num[0]];
+        Stage_card1.GetComponent<Image>().sprite = Card_Img[stage_card_num[1]];
+        Stage_card2.GetComponent<Image>().sprite = Card_Img[stage_card_num[2]];
     }
 
     // 보스 등장 이전 세팅
@@ -168,7 +179,6 @@ public class StagePlay : MonoBehaviour
             }
         }
     }
-
 
 
     // 1. 카드 선택 시 화면 이동
@@ -317,9 +327,40 @@ public class StagePlay : MonoBehaviour
     // 장비 교체 확인
     public void EquipChange()
     {
+        int nowindex = 3;
+        if (ingamecs.NowEquip[int.Parse(getEorW.Substring(0, 1)) - 1].Substring(0, 1) == "0") nowindex = int.Parse(getEorW.Substring(0, 1)) - 1;
+        else
+        {
+            nowindex += 125 * (int.Parse(getEorW.Substring(0, 1)) - 1) +
+                25 * int.Parse(ingamecs.NowEquip[int.Parse(getEorW.Substring(0, 1)) - 1].Substring(1, 1)) +
+                5 * int.Parse(ingamecs.NowEquip[int.Parse(getEorW.Substring(0, 1)) - 1].Substring(2, 1)) +
+                int.Parse(ingamecs.NowEquip[int.Parse(getEorW.Substring(0, 1)) - 1].Substring(3, 1));
+        }
+
+
+        int checkindex = 3;
+        checkindex += 125 * (int.Parse(getEorW.Substring(0, 1)) - 1) +
+            25 * int.Parse(getEorW.Substring(1, 1)) +
+            5 * int.Parse(getEorW.Substring(2, 1)) +
+            int.Parse(getEorW.Substring(3, 1));
+
+        // 추가 장비 스탯 +
+        try { ingamecs.NowSpeed += int.Parse(injson.jequipData[checkindex]["statEffect"]["speed"].ToString()); } catch { }
+        try { ingamecs.NowATK += int.Parse(injson.jequipData[checkindex]["statEffect"]["attack"].ToString()); } catch { }
+        try { ingamecs.NowDEF += int.Parse(injson.jequipData[checkindex]["statEffect"]["defense"].ToString()); } catch { }
+        try { ingamecs.NowmaxHP += int.Parse(injson.jequipData[checkindex]["statEffect"]["maxHp"].ToString()); } catch { }
+
+        // 기존 장비 스탯 -
+        try { ingamecs.NowSpeed -= int.Parse(injson.jequipData[nowindex]["statEffect"]["speed"].ToString()); } catch { }
+        try { ingamecs.NowATK -= int.Parse(injson.jequipData[nowindex]["statEffect"]["attack"].ToString()); } catch { }
+        try { ingamecs.NowDEF -= int.Parse(injson.jequipData[nowindex]["statEffect"]["defense"].ToString()); } catch { }
+        try { ingamecs.NowmaxHP -= int.Parse(injson.jequipData[nowindex]["statEffect"]["maxHp"].ToString()); } catch { }
+
         ingamecs.NowEquip[int.Parse(getEorW.Substring(0, 1)) - 1] = $"{getEorW}";
         Debug.Log($"바뀐 Equip 설정 : {ingamecs.NowEquip[int.Parse(getEorW.Substring(0, 1)) - 1]}");
+
         // 스탯 반영 해줘야 합니다.
+        ingamecs.StateUpdate();
     }
 
 
@@ -520,6 +561,7 @@ public class StagePlay : MonoBehaviour
         MBtnTxt.GetComponent<Text>().text = "턴 진행";
 
         int mdamage = ingamecs.NowMATK * (40/(40+ingamecs.NowDEF));
+        if (mdamage == 0) mdamage = 1;
         ingamecs.NowHP -= mdamage;
         if (ingamecs.NowHP < 0) ingamecs.NowHP = 0;
 
@@ -539,8 +581,33 @@ public class StagePlay : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             BattleCardHandTxt[i].GetComponent<Text>().text = $"공격력 {ingamecs.NowWeaponATK[CardHand[i]]}";
-        }
 
+            Debug.Log(ingamecs.NowWeapon[CardHand[i]].Substring(0, 1));
+
+            switch (ingamecs.NowWeapon[CardHand[i]].Substring(0, 1))
+            {
+                case "0":
+                    CardWImg[i].GetComponent<Image>().sprite = sword;
+                    break;
+                case "1":
+                    CardWImg[i].GetComponent<Image>().sprite = hammer;
+                    break;
+                case "2":
+                    CardWImg[i].GetComponent<Image>().sprite = spear;
+                    break;
+                case "3":
+                    CardWImg[i].GetComponent<Image>().sprite = dagger;
+                    break;
+                case "4":
+                    CardWImg[i].GetComponent<Image>().sprite = wand;
+                    break;
+                case "5":
+                    CardWImg[i].GetComponent<Image>().sprite = fist;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     // 사용할 무기 선택
@@ -601,6 +668,7 @@ public class StagePlay : MonoBehaviour
         if (ingamecs.NowHP <= 0) GameOver();
         else if (ingamecs.NowMHP <= 0) Victory();
         else MonsterBettle();
+
     }
 
 
@@ -692,6 +760,39 @@ public class StagePlay : MonoBehaviour
             CardHand[hand_count] = (int)Deck.Pop();         // 덱 pop으로 가져오기
             CardExistCheck[hand_count] = 1;                   // 핸드 카드 idx 사용 가능 표시
             hand_count += 1;
+        }
+    }
+
+    public void TakeWeaponImg()
+    {
+        // 카드 내 이미지 채우기
+        for (int i = 0; i < 4; i++)
+        {
+            Debug.Log(ingamecs.NowWeapon[CardHand[i]].Substring(0, 1));
+
+            switch (ingamecs.NowWeapon[CardHand[i]].Substring(0, 1))
+            {
+                case "0":
+                    CardWImg[i].GetComponent<Image>().sprite = sword;
+                    break;
+                case "1":
+                    CardWImg[i].GetComponent<Image>().sprite = hammer;
+                    break;
+                case "2":
+                    CardWImg[i].GetComponent<Image>().sprite = spear;
+                    break;
+                case "3":
+                    CardWImg[i].GetComponent<Image>().sprite = dagger;
+                    break;
+                case "4":
+                    CardWImg[i].GetComponent<Image>().sprite = wand;
+                    break;
+                case "5":
+                    CardWImg[i].GetComponent<Image>().sprite = fist;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -897,6 +998,10 @@ public class StagePlay : MonoBehaviour
         ShopEquipSetting((int)ingamecs.NowWorld);
         Town_Panel.SetActive(true);
         TownEnchant1A();
+
+        healPay = (ingamecs.NowmaxHP - ingamecs.NowHP) * ingamecs.NowWorld * 100 / ingamecs.NowmaxHP;
+        HcostTxt.GetComponent<Text>().text = $"{healPay} Gold";
+
         Debug.Log("CityIn");
         NextStage();
     }
@@ -987,6 +1092,55 @@ public class StagePlay : MonoBehaviour
             eorwArray[i] = eorw;
         }
 
+        // 무기나 장비 이미지 띄우기
+        for (int i = 0; i < 3; i++)
+        {
+            if (eorwArray[i].Substring(0, 1) == "0")
+            {
+                switch (eorwArray[i].Substring(1, 1))
+                {
+                    case "0":
+                        ShopImg[i].GetComponent<Image>().sprite = sword;
+                        break;
+                    case "1":
+                        ShopImg[i].GetComponent<Image>().sprite = hammer;
+                        break;
+                    case "2":
+                        ShopImg[i].GetComponent<Image>().sprite = spear;
+                        break;
+                    case "3":
+                        ShopImg[i].GetComponent<Image>().sprite = dagger;
+                        break;
+                    case "4":
+                        ShopImg[i].GetComponent<Image>().sprite = wand;
+                        break;
+                    case "5":
+                        ShopImg[i].GetComponent<Image>().sprite = fist;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (eorwArray[i].Substring(0, 1))
+                {
+                    case "1":
+                        ShopImg[i].GetComponent<Image>().sprite = helmet;
+                        break;
+                    case "2":
+                        ShopImg[i].GetComponent<Image>().sprite = armor;
+                        break;
+                    case "3":
+                        ShopImg[i].GetComponent<Image>().sprite = shoes;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+        }
+
         Debug.Log(eorwArray[0]);
 
     }
@@ -1018,11 +1172,19 @@ public class StagePlay : MonoBehaviour
     // 힐러 회복 버튼
     public void TownHeal()
     {
-        if (true) // 필요한 골드가 있는지 체크
+        Debug.Log("Heal??");
+
+        if (ingamecs.NowGold > (int)healPay) // 필요한 골드가 있는지 체크
         {
-            // 골드 차감
+            ingamecs.NowGold -= (int)healPay;// 골드 차감
             ingamecs.NowHP = ingamecs.NowmaxHP; // 체력 전부 회복
         }
+        else
+        {
+            Debug.Log("Don't Heal Enough money.");
+        }
+
+        ingamecs.StateUpdate();
     }
 
     // 무기 강화 1_A(정보 업데이트)
