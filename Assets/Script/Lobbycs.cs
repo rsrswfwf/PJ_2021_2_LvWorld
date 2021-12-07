@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class Lobbycs : MonoBehaviour
 {
     Recodecs recodecs;
+    Setting setting;
 
     // Start is called before the first frame update
     void Start()

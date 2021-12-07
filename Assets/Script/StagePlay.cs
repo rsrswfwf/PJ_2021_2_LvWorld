@@ -43,6 +43,7 @@ public class StagePlay : MonoBehaviour
     // Player State    ex) Now ..
     InGamecs ingamecs;
     InJson injson;
+    Setting setting;
 
     // 0. 스테이지 카드 세팅 단계 변수
     GameObject Stage_card0, Stage_card1, Stage_card2;           // Stage Card Image
@@ -119,6 +120,7 @@ public class StagePlay : MonoBehaviour
         Stage_card2 = GameObject.Find("FrontCard2");
 
         StageCheck();
+        setting.AudioBGM((int)ingamecs.NowWorld);
     }
 
     // 0. 스테이지 카드 세팅
@@ -1356,6 +1358,7 @@ public class StagePlay : MonoBehaviour
         {
             ingamecs.NowWorld++;
             ingamecs.NowStage = 1;
+            setting.AudioBGM((int)ingamecs.NowWorld);
             bossClear = false;
         }
         else ingamecs.NowStage++;

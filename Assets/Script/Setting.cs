@@ -5,12 +5,18 @@ using UnityEngine.UI;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class Setting : MonoBehaviour
 {
-
     // Player State    ex) Now ..
     InGamecs ingamecs;
+
+    // Sound 용
+    public AudioMixer masterMixer;
+    public Slider audioSlider;
+    public AudioClip w1BGM, w2BGM;
+    public AudioSource BGMsource;
 
     // intro Skip 기능용 오브젝트
     public GameObject introskipBtn;
@@ -30,9 +36,9 @@ public class Setting : MonoBehaviour
 
 
         //구글 게임 서비스 활성화(초기화)
-        PlayGamesPlatform.InitializeInstance(new PlayGamesClientConfiguration.Builder().Build());
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
+        // PlayGamesPlatform.InitializeInstance(new PlayGamesClientConfiguration.Builder().Build());
+        // PlayGamesPlatform.DebugLogEnabled = true;
+        // PlayGamesPlatform.Activate();
     }
 
     // 인트로 스킵 버튼
@@ -203,5 +209,25 @@ public class Setting : MonoBehaviour
 
         yield return null;
 
+    }
+
+    // 사운드 on,off
+
+    public void AudioControl()
+    {
+        float sound = audioSlider.value;
+
+        if (sound == -40f) masterMixer.SetFloat("BGM", -80);
+        else masterMixer.SetFloat("BGM", sound);
+    }
+
+
+    // 월드마다 사운드 변경
+
+    public void AudioBGM(int Worldnum)
+    {
+        if (Worldnum == 1) BGMsource.clip = w1BGM;
+        else if (Worldnum == 2) BGMsource.clip = w2BGM;
+        else BGMsource.clip = w1BGM;
     }
 }
